@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
 import 'package:todo_list_with_dismissible/app/pages/todo_list_simple/controller/todo_list_simple_controller.dart';
 
@@ -18,136 +19,98 @@ class ChartSimpleWidget extends StatefulWidget {
 
 class _ChartSimpleWidgetState extends State<ChartSimpleWidget> {
 
-  final Color leftBarColor = const Color(0xff53fdd7);
-  final Color rightBarColor = const Color(0xffff5182);
-  final double width = 7;
-
-  late List<BarChartGroupData> rawBarGroups;
-  late List<BarChartGroupData> showingBarGroups;
-
   int touchedGroupIndex = -1;
-
-  @override
-  void initState() {
-    super.initState();
-    final barGroup1 = makeGroupData(0, 5, 12);
-    final barGroup2 = makeGroupData(1, 16, 12);
-    final barGroup3 = makeGroupData(2, 18, 5);
-    final barGroup4 = makeGroupData(3, 20, 16);
-    final barGroup5 = makeGroupData(4, 17, 6);
-    final barGroup6 = makeGroupData(5, 19, 1.5);
-    final barGroup7 = makeGroupData(6, 10, 1.5);
-
-    final items = [
-      barGroup1,
-      barGroup2,
-      barGroup3,
-      barGroup4,
-      barGroup5,
-      barGroup6,
-      barGroup7,
-    ];
-
-    rawBarGroups = items;
-
-    showingBarGroups = rawBarGroups;
-  }
-
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 400,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: AspectRatio(
-          aspectRatio: 1,
-          child: Card(
-            elevation: 0,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-            color: const Color(0xff2c4260),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      makeTransactionsIcon(),
-                      const SizedBox(
-                        width: 38,
-                      ),
-                      const Text(
-                        'Transactions',
-                        style: TextStyle(color: Colors.white, fontSize: 22),
-                      ),
-                      const SizedBox(
-                        width: 4,
-                      ),
-                      const Text(
-                        'state',
-                        style: TextStyle(color: Color(0xff77839a), fontSize: 16),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 38,
-                  ),
-                  Expanded(
-                    child: BarChart(
-                      BarChartData(
-                        maxY: 20,
-                        barTouchData: BarTouchData(
-                          touchTooltipData: BarTouchTooltipData(
-                            tooltipBgColor: Colors.grey,
-                            getTooltipItem: (a, b, c, d) => null,
-                          ),
-                          touchCallback: (FlTouchEvent event, response) {},
-                        ),
-                        titlesData: FlTitlesData(
-                          show: true,
-                          rightTitles: AxisTitles(
-                            sideTitles: SideTitles(showTitles: false),
-                          ),
-                          topTitles: AxisTitles(
-                            sideTitles: SideTitles(showTitles: false),
-                          ),
-                          bottomTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                              showTitles: true,
-                              getTitlesWidget: bottomTitles,
-                              reservedSize: 42,
-                            ),
-                          ),
-                          leftTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                              showTitles: true,
-                              reservedSize: 28,
-                              interval: 1,
-                              getTitlesWidget: leftTitles,
-                            ),
-                          ),
-                        ),
-                        borderData: FlBorderData(
-                          show: false,
-                        ),
-                        barGroups: showingBarGroups,
-                        gridData: FlGridData(show: false),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                ],
+      width: MediaQuery.of(context).size.width,
+      child: Card(
+        elevation: 1,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        color: const Color(0xff2c4260),
+        child: Column(
+          children: [
+            const Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: 10,
+              ),
+              child: Text(
+                "Nome do Gráfico",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
               ),
             ),
-          ),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SizedBox(
+                height: 300,
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Observer(
+                      builder: (context) {
+
+                        if(widget.controller.approvers.isEmpty) {
+                          return const Center(
+                            child: Text("Não há dados para montar o gráfico"),
+                          );
+                        }
+
+                        return BarChart(
+                          BarChartData(
+                            alignment: BarChartAlignment.start,
+                            maxY: widget.controller.maxY,
+                            groupsSpace: 20,
+                            barTouchData: BarTouchData(
+                              touchTooltipData: BarTouchTooltipData(
+                                tooltipBgColor: Colors.grey,
+                                getTooltipItem: (a, b, c, d) => null,
+                              ),
+                              touchCallback: (FlTouchEvent event, response) {},
+                            ),
+                            titlesData: FlTitlesData(
+                              show: true,
+                              rightTitles: AxisTitles(
+                                sideTitles: SideTitles(showTitles: false),
+                              ),
+                              topTitles: AxisTitles(
+                                sideTitles: SideTitles(showTitles: false),
+                              ),
+                              bottomTitles: AxisTitles(
+                                sideTitles: SideTitles(
+                                  showTitles: true,
+                                  getTitlesWidget: bottomTitles,
+                                  reservedSize: 45,
+                                ),
+                              ),
+                              leftTitles: AxisTitles(
+                                sideTitles: SideTitles(
+                                  showTitles: true,
+                                  reservedSize: 35,
+                                  interval: 1,
+                                  getTitlesWidget: leftTitles,
+                                ),
+                              ),
+                            ),
+                            borderData: FlBorderData(
+                              show: false,
+                            ),
+                            barGroups: widget.controller.chartData,
+                            gridData: FlGridData(show: false),
+                          ),
+                        );
+                      }
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -160,24 +123,38 @@ class _ChartSimpleWidgetState extends State<ChartSimpleWidget> {
       fontSize: 14,
     );
     String text;
-    if (value == 0) {
-      text = '1K';
-    } else if (value == 10) {
-      text = '5K';
-    } else if (value == 19) {
-      text = '10K';
+
+    if(value == 0) {
+      text = "0";
+    } else if(value % 10 == 0) {
+      text = value.toString();
+      text = text.substring(0,text.indexOf(".") + 2);
     } else {
       return Container();
     }
+
     return SideTitleWidget(
       axisSide: meta.axisSide,
-      space: 0,
+      space: 20,
       child: Text(text, style: style),
     );
   }
 
+  //String _getTextLeftLegend(double)
+
   Widget bottomTitles(double value, TitleMeta meta) {
-    List<String> titles = ["Mn", "Te", "Wd", "Tu", "Fr", "St", "Su"];
+
+    final int index;
+
+    if(value == 0) {
+      index = 0;
+    } else if(value % 2 == 0) {
+      index = (value / 2).toInt();
+    } else {
+      return Container();
+    }
+
+    final approver = widget.controller.approvers[index];
 
     return SideTitleWidget(
       axisSide: meta.axisSide,
@@ -185,8 +162,6 @@ class _ChartSimpleWidgetState extends State<ChartSimpleWidget> {
       child: Tooltip(
         message: "Nome do usuário",
         triggerMode: TooltipTriggerMode.tap,
-        waitDuration: Duration(seconds: 1),
-        showDuration: Duration(seconds: 1),
         child: Stack(
           alignment: Alignment.center,
           children: [
@@ -195,21 +170,21 @@ class _ChartSimpleWidgetState extends State<ChartSimpleWidget> {
                 color: Colors.white,
                 shape: BoxShape.circle,
               ),
-              height: 30,
-              width: 30,
+              height: 45,
+              width: 45,
             ),
             Container(
-              decoration: BoxDecoration(
-                color: Colors.red.shade400,
+              decoration: const BoxDecoration(
+                color: Colors.blue,
                 shape: BoxShape.circle,
               ),
               height: 25,
               width: 25,
               child: Center(
                 child: Text(
-                  titles[value.toInt()],
+                  _getInitials(approver.name),
                   style: const TextStyle(
-                    color: Color(0xff7589a2),
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
                   ),
@@ -220,21 +195,6 @@ class _ChartSimpleWidgetState extends State<ChartSimpleWidget> {
         ),
       ),
     );
-  }
-
-  BarChartGroupData makeGroupData(int x, double y1, double y2) {
-    return BarChartGroupData(barsSpace: 4, x: x, barRods: [
-      BarChartRodData(
-        toY: y1,
-        color: leftBarColor,
-        width: width,
-      ),
-      BarChartRodData(
-        toY: y2,
-        color: rightBarColor,
-        width: width,
-      ),
-    ]);
   }
 
   Widget makeTransactionsIcon() {
@@ -283,5 +243,23 @@ class _ChartSimpleWidgetState extends State<ChartSimpleWidget> {
         ),
       ],
     );
+  }
+
+  String _getInitials(String name) {
+    if (name.isEmpty) {
+      return "";
+    }
+
+    var nomes = name.split(" ");
+
+    if (nomes.length == 1) {
+      if (nomes.first.length == 1) {
+        return (nomes.first[0]).toUpperCase();
+      }
+
+      return (nomes.first[0] + nomes.first[1]).toUpperCase();
+    }
+
+    return (nomes[0][0] + nomes[nomes.length - 1][0]).toUpperCase();
   }
 }

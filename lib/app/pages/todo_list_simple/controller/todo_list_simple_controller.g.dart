@@ -16,6 +16,19 @@ mixin _$TodoListSimpleController on _TodoListSimpleControllerBase, Store {
       (_$approversComputed ??= Computed<List<Approver>>(() => super.approvers,
               name: '_TodoListSimpleControllerBase.approvers'))
           .value;
+  Computed<List<BarChartGroupData>>? _$chartDataComputed;
+
+  @override
+  List<BarChartGroupData> get chartData => (_$chartDataComputed ??=
+          Computed<List<BarChartGroupData>>(() => super.chartData,
+              name: '_TodoListSimpleControllerBase.chartData'))
+      .value;
+  Computed<double>? _$maxYComputed;
+
+  @override
+  double get maxY => (_$maxYComputed ??= Computed<double>(() => super.maxY,
+          name: '_TodoListSimpleControllerBase.maxY'))
+      .value;
 
   late final _$_approversAtom =
       Atom(name: '_TodoListSimpleControllerBase._approvers', context: context);
@@ -61,7 +74,9 @@ mixin _$TodoListSimpleController on _TodoListSimpleControllerBase, Store {
   @override
   String toString() {
     return '''
-approvers: ${approvers}
+approvers: ${approvers},
+chartData: ${chartData},
+maxY: ${maxY}
     ''';
   }
 }
