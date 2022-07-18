@@ -119,10 +119,11 @@ class _TodoListSimpleWidgetState extends State<TodoListSimpleWidget> {
             return Visibility(
               visible: widget.controller.approvers.isNotEmpty,
               replacement: const Text("Não há aprovadores cadastrados"),
-              child: ListView.builder(
+              child: ListView.separated(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: widget.controller.approvers.length,
+                separatorBuilder: (_, __) => const Divider(),
                 itemBuilder: (_, index) {
                   final approver = widget.controller.approvers[index];
 

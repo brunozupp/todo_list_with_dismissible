@@ -179,19 +179,46 @@ class _ChartSimpleWidgetState extends State<ChartSimpleWidget> {
   Widget bottomTitles(double value, TitleMeta meta) {
     List<String> titles = ["Mn", "Te", "Wd", "Tu", "Fr", "St", "Su"];
 
-    Widget text = Text(
-      titles[value.toInt()],
-      style: const TextStyle(
-        color: Color(0xff7589a2),
-        fontWeight: FontWeight.bold,
-        fontSize: 14,
-      ),
-    );
-
     return SideTitleWidget(
       axisSide: meta.axisSide,
       space: 16, //margin top
-      child: text,
+      child: Tooltip(
+        message: "Nome do usuário",
+        triggerMode: TooltipTriggerMode.tap,
+        waitDuration: Duration(seconds: 1),
+        showDuration: Duration(seconds: 1),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+              ),
+              height: 30,
+              width: 30,
+            ),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.red.shade400,
+                shape: BoxShape.circle,
+              ),
+              height: 25,
+              width: 25,
+              child: Center(
+                child: Text(
+                  titles[value.toInt()],
+                  style: const TextStyle(
+                    color: Color(0xff7589a2),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

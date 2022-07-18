@@ -30,24 +30,24 @@ class ItemTileWidget extends StatelessWidget {
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text("Quer deletar?"),
-                  SizedBox(
+                  const Text("Quer deletar?"),
+                  const SizedBox(
                     height: 10,
                   ),
                   Row(
                     children: [
                       Expanded(
                         child: ElevatedButton(
-                          child: Text("VOLTAR"),
+                          child: const Text("VOLTAR"),
                           onPressed: () => Navigator.of(context).pop(false),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
                       Expanded(
                         child: ElevatedButton(
-                          child: Text("DELETAR"),
+                          child: const Text("DELETAR"),
                           onPressed: () => Navigator.of(context).pop(true),
                         ),
                       ),
@@ -64,7 +64,7 @@ class ItemTileWidget extends StatelessWidget {
       direction: DismissDirection.startToEnd,
       background: Container(
         color: Colors.red,
-        child: Center(
+        child: const Center(
           child: Icon(
             Icons.delete,
             color: Colors.white,
@@ -72,6 +72,7 @@ class ItemTileWidget extends StatelessWidget {
         ),
       ),
       child: ListTile(
+        tileColor: Colors.grey[200],
         title: Text(approver.name),
         subtitle: Row(
           children: [
@@ -81,7 +82,7 @@ class ItemTileWidget extends StatelessWidget {
                 color: Colors.green,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               width: 10,
             ),
             Text(
